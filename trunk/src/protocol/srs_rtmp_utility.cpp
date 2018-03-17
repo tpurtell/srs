@@ -82,9 +82,8 @@ void srs_vhost_resolve(string& vhost, string app, string param)
     app = srs_string_replace(app, "&&", "?");
     app = srs_string_replace(app, "=", "?");
     
-    if ((pos = app.find("?")) != std::string::npos) {
-        std::string query = app.substr(pos + 1);
-        app = app.substr(0, pos);
+    if (!param.empty()) {
+        std::string query = param;
         
         if ((pos = query.find("vhost?")) != std::string::npos) {
             query = query.substr(pos + 6);
@@ -132,7 +131,6 @@ string srs_generate_tc_url(string ip, string vhost, string app, string port, str
     
     tcUrl += "/";
     tcUrl += app;
-    tcUrl += param;
     
     return tcUrl;
 }
