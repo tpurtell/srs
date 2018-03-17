@@ -70,16 +70,11 @@ void srs_discovery_tc_url(
     app = url;
     vhost = host;
     srs_vhost_resolve(vhost, app, param);
-    srs_vhost_resolve(vhost, stream, param);
 }
 
-void srs_vhost_resolve(string& vhost, string& app, string& param)
+void srs_vhost_resolve(string& vhost, string app, string param)
 {
-    // get original param
-    size_t pos = 0;
-    if ((pos = app.find("?")) != std::string::npos) {
-        param = app.substr(pos);
-    }
+    app = param;
     
     // filter tcUrl
     app = srs_string_replace(app, ",", "?");

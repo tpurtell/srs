@@ -474,12 +474,16 @@ int srs_librtmp_context_parse_uri(Context* context)
     // parse uri
     size_t pos = string::npos;
     string uri = context->url;
-    // tcUrl, stream
-    if ((pos = uri.rfind("/")) != string::npos) {
-        context->stream = uri.substr(pos + 1);
+    // param, tcUrl, stream
+    if ((pos = uri.find("?")) != string::npos) {
+        context->param = uri.substr(pos);
         context->tcUrl = uri = uri.substr(0, pos);
     }
-    
+    if ((pos = uri.rfind("/")) != string::npos) {
+        context->stream = uri.substr(pos + 1);
+        context->tcUrl = uri.substr(0, pos);
+    }
+
     std::string schema;
     srs_discovery_tc_url(context->tcUrl, 
         schema, context->host, context->vhost, context->app, context->stream, context->port,
