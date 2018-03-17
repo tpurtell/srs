@@ -85,6 +85,7 @@ void srs_vhost_resolve(string& vhost, string app, string param)
     if (!param.empty()) {
         std::string query = param;
         
+        size_t pos = std::string::npos;
         if ((pos = query.find("vhost?")) != std::string::npos) {
             query = query.substr(pos + 6);
             if (!query.empty()) {
