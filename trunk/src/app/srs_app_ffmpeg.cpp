@@ -422,10 +422,17 @@ int SrsFFMPEG::start()
     
     // child process: ffmpeg encoder engine.
     if (pid == 0) {
-        // ignore the SIGINT and SIGTERM
+        // ignore the SIGINT and SIGTERM and SIGCHLD
         signal(SIGINT, SIG_IGN);
         signal(SIGTERM, SIG_IGN);
-        
+        signal(SIGCHLD, SIG_IGN);
+
+        //make a new process group
+        if (setpgid(0, 0) < 0) {
+            srs_error("failed setting process group. errno=%d", errno);
+            exit(-1);
+        }
+
         // redirect logs to file.
         int log_fd = -1;
         int flags = O_CREAT|O_WRONLY|O_APPEND;
@@ -538,9 +545,9 @@ void SrsFFMPEG::stop()
     // when rewind, upstream will stop publish(unpublish),
     // unpublish event will stop all ffmpeg encoders,
     // then publish will start all ffmpeg encoders.
-    int ret = srs_kill_forced(pid);
+    int ret = srs_kill_forced(-pid);
     if (ret != ERROR_SUCCESS) {
-        srs_warn("ignore kill the encoder failed, pid=%d. ret=%d", pid, ret);
+        srs_warn("ignore kill the encoder failed, pgid=%d. ret=%d", pid, ret);
         return;
     }
     
@@ -560,9 +567,9 @@ void SrsFFMPEG::fast_stop()
         return;
     }
     
-    if (kill(pid, SIGTERM) < 0) {
+    if (kill(-pid, SIGTERM) < 0) {
         ret = ERROR_SYSTEM_KILL;
-        srs_warn("ignore fast stop ffmpeg failed, pid=%d. ret=%d", pid, ret);
+        srs_warn("ignore fast stop ffmpeg failed, pgid=%d. ret=%d", pid, ret);
         return;
     }
     
