@@ -357,6 +357,7 @@ int SrsHttpHooks::on_hls_notify(int cid, std::string url, SrsRequest* req, std::
     
     url = srs_string_replace(url, "[app]", req->app);
     url = srs_string_replace(url, "[stream]", req->stream);
+    url = srs_string_replace(url, "[param]", req->param);
     url = srs_string_replace(url, "[ts_url]", ts_url);
     
     int64_t starttime = srs_update_system_time_ms();
