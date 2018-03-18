@@ -140,6 +140,7 @@ int SrsHttpHooks::on_publish(string url, SrsRequest* req)
         << SRS_JFIELD_STR("app", req->app) << SRS_JFIELD_CONT
         << SRS_JFIELD_STR("tcUrl", req->tcUrl) << SRS_JFIELD_CONT  // Add tcUrl for auth publish rtmp stream client
         << SRS_JFIELD_STR("stream", req->stream)
+        << SRS_JFIELD_STR("param", req->param)
         << SRS_JOBJECT_END;
         
     std::string data = ss.str();
@@ -173,6 +174,7 @@ void SrsHttpHooks::on_unpublish(string url, SrsRequest* req)
         << SRS_JFIELD_STR("vhost", req->vhost) << SRS_JFIELD_CONT
         << SRS_JFIELD_STR("app", req->app) << SRS_JFIELD_CONT
         << SRS_JFIELD_STR("stream", req->stream)
+        << SRS_JFIELD_STR("param", req->param)
         << SRS_JOBJECT_END;
         
     std::string data = ss.str();
