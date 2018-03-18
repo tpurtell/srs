@@ -2673,7 +2673,7 @@ int SrsRtmpServer::identify_client(int stream_id, SrsRtmpConnType& type, string&
         }
         if (dynamic_cast<SrsFMLEStartPacket*>(pkt)) {
             srs_info("identify client by releaseStream, fmle publish.");
-            return identify_fmle_publish_client(dynamic_cast<SrsFMLEStartPacket*>(pkt), type, stream_name, params);
+            return identify_fmle_publish_client(dynamic_cast<SrsFMLEStartPacket*>(pkt), type, stream_name, param);
         }
         if (dynamic_cast<SrsPlayPacket*>(pkt)) {
             srs_info("level0 identify client by play.");
@@ -3159,7 +3159,7 @@ int SrsRtmpServer::identify_create_stream_client(SrsCreateStreamPacket* req, int
         }
         if (dynamic_cast<SrsPublishPacket*>(pkt)) {
             srs_info("identify client by publish, falsh publish.");
-            return identify_flash_publish_client(dynamic_cast<SrsPublishPacket*>(pkt), type, stream_name);
+            return identify_flash_publish_client(dynamic_cast<SrsPublishPacket*>(pkt), type, stream_name, param);
         }
         if (dynamic_cast<SrsCreateStreamPacket*>(pkt)) {
             srs_info("identify client by create stream, play or flash publish.");
@@ -3167,7 +3167,7 @@ int SrsRtmpServer::identify_create_stream_client(SrsCreateStreamPacket* req, int
         }
         if (dynamic_cast<SrsFMLEStartPacket*>(pkt)) {
             srs_info("identify client by FCPublish, haivision publish.");
-            return identify_haivision_publish_client(dynamic_cast<SrsFMLEStartPacket*>(pkt), type, stream_name);
+            return identify_haivision_publish_client(dynamic_cast<SrsFMLEStartPacket*>(pkt), type, stream_name, param);
         }
         
         srs_trace("ignore AMF0/AMF3 command message.");
