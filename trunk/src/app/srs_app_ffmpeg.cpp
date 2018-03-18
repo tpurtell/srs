@@ -545,7 +545,7 @@ void SrsFFMPEG::stop()
     // when rewind, upstream will stop publish(unpublish),
     // unpublish event will stop all ffmpeg encoders,
     // then publish will start all ffmpeg encoders.
-    int ret = srs_kill_forced(-pid);
+    int ret = srs_kill_forced(pid);
     if (ret != ERROR_SUCCESS) {
         srs_warn("ignore kill the encoder failed, pgid=%d. ret=%d", pid, ret);
         return;
