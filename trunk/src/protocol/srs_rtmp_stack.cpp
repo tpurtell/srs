@@ -2632,7 +2632,7 @@ int SrsRtmpServer::on_bw_done()
     return ret;
 }
 
-int SrsRtmpServer::identify_client(int stream_id, SrsRtmpConnType& type, string& stream_name, double& duration)
+int SrsRtmpServer::identify_client(int stream_id, SrsRtmpConnType& type, string& stream_name, double& duration, string& param)
 {
     type = SrsRtmpConnUnknown;
     int ret = ERROR_SUCCESS;
@@ -2669,7 +2669,7 @@ int SrsRtmpServer::identify_client(int stream_id, SrsRtmpConnType& type, string&
         
         if (dynamic_cast<SrsCreateStreamPacket*>(pkt)) {
             srs_info("identify client by create stream, play or flash publish.");
-            return identify_create_stream_client(dynamic_cast<SrsCreateStreamPacket*>(pkt), stream_id, type, stream_name, duration);
+            return identify_create_stream_client(dynamic_cast<SrsCreateStreamPacket*>(pkt), stream_id, type, stream_name, duration, param);
         }
         if (dynamic_cast<SrsFMLEStartPacket*>(pkt)) {
             srs_info("identify client by releaseStream, fmle publish.");
@@ -2677,7 +2677,7 @@ int SrsRtmpServer::identify_client(int stream_id, SrsRtmpConnType& type, string&
         }
         if (dynamic_cast<SrsPlayPacket*>(pkt)) {
             srs_info("level0 identify client by play.");
-            return identify_play_client(dynamic_cast<SrsPlayPacket*>(pkt), type, stream_name, duration);
+            return identify_play_client(dynamic_cast<SrsPlayPacket*>(pkt), type, stream_name, duration, param);
         }
         // call msg,
         // support response null first,
@@ -3110,7 +3110,7 @@ int SrsRtmpServer::start_flash_publish(int stream_id)
     return ret;
 }
 
-int SrsRtmpServer::identify_create_stream_client(SrsCreateStreamPacket* req, int stream_id, SrsRtmpConnType& type, string& stream_name, double& duration)
+int SrsRtmpServer::identify_create_stream_client(SrsCreateStreamPacket* req, int stream_id, SrsRtmpConnType& type, string& stream_name, double& duration, string& param)
 {
     int ret = ERROR_SUCCESS;
     
@@ -3155,7 +3155,7 @@ int SrsRtmpServer::identify_create_stream_client(SrsCreateStreamPacket* req, int
         
         if (dynamic_cast<SrsPlayPacket*>(pkt)) {
             srs_info("level1 identify client by play.");
-            return identify_play_client(dynamic_cast<SrsPlayPacket*>(pkt), type, stream_name, duration);
+            return identify_play_client(dynamic_cast<SrsPlayPacket*>(pkt), type, stream_name, duration, param);
         }
         if (dynamic_cast<SrsPublishPacket*>(pkt)) {
             srs_info("identify client by publish, falsh publish.");
@@ -3163,7 +3163,7 @@ int SrsRtmpServer::identify_create_stream_client(SrsCreateStreamPacket* req, int
         }
         if (dynamic_cast<SrsCreateStreamPacket*>(pkt)) {
             srs_info("identify client by create stream, play or flash publish.");
-            return identify_create_stream_client(dynamic_cast<SrsCreateStreamPacket*>(pkt), stream_id, type, stream_name, duration);
+            return identify_create_stream_client(dynamic_cast<SrsCreateStreamPacket*>(pkt), stream_id, type, stream_name, duration, param);
         }
         if (dynamic_cast<SrsFMLEStartPacket*>(pkt)) {
             srs_info("identify client by FCPublish, haivision publish.");
@@ -3226,12 +3226,17 @@ int SrsRtmpServer::identify_flash_publish_client(SrsPublishPacket* req, SrsRtmpC
     return ret;
 }
 
-int SrsRtmpServer::identify_play_client(SrsPlayPacket* req, SrsRtmpConnType& type, string& stream_name, double& duration)
+int SrsRtmpServer::identify_play_client(SrsPlayPacket* req, SrsRtmpConnType& type, string& stream_name, double& duration, string& param)
 {
     int ret = ERROR_SUCCESS;
     
     type = SrsRtmpConnPlay;
     stream_name = req->stream_name;
+    size_t pos = string::npos;
+    if ((pos = stream_name.find("?")) != string::npos) {
+        param = stream_name.substr(pos);
+        stream_name = stream_name.substr(0, pos);
+    }
     duration = req->duration;
     
     srs_info("identity client type=play, stream_name=%s, duration=%.2f", stream_name.c_str(), duration);

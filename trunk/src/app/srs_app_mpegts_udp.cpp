@@ -621,12 +621,15 @@ int SrsMpegtsOverUdp::connect()
         size_t pos = string::npos;
         string uri = req->tcUrl = output;
 
-        // tcUrl, stream
-        if ((pos = uri.rfind("/")) != string::npos) {
-            req->stream = uri.substr(pos + 1);
-            req->tcUrl = uri = uri.substr(0, pos);
+        if ((pos = uri.find("?")) != string::npos) {
+            context->param = uri.substr(pos);
+            context->tcUrl = uri = uri.substr(0, pos);
         }
-    
+        if ((pos = uri.rfind("/")) != string::npos) {
+            context->stream = uri.substr(pos + 1);
+            context->tcUrl = uri.substr(0, pos);
+        }
+
         srs_discovery_tc_url(req->tcUrl, 
             req->schema, req->host, req->vhost, req->app, req->stream, req->port,
             req->param);
