@@ -286,7 +286,8 @@ int SrsEncoder::initialize_ffmpeg(SrsFFMPEG* ffmpeg, SrsRequest* req, SrsConfDir
     output = srs_string_replace(output, "[app]", req->app);
     output = srs_string_replace(output, "[stream]", req->stream);
     output = srs_string_replace(output, "[engine]", engine->arg0());
-    
+    output = srs_string_replace(output, "[param]", req->param);
+
     std::string log_file = SRS_CONSTS_NULL_FILE; // disabled
     // write ffmpeg info to log file.
     if (_srs_config->get_ffmpeg_log_enabled()) {
