@@ -266,10 +266,17 @@ int SrsEncoder::initialize_ffmpeg(SrsFFMPEG* ffmpeg, SrsRequest* req, SrsConfDir
     input += req->port;
     input += "/";
     input += req->app;
-    input += "?vhost=";
-    input += req->vhost;
     input += "/";
     input += req->stream;
+
+    if (req->stream.find('?') != std::string::npos) {
+        input += "&vhost=";
+        input += req->vhost;
+    }
+    else {
+        input += "?vhost=";
+        input += req->vhost;
+    }
 
     // stream name: vhost/app/stream for print
     input_stream_name = req->vhost;
