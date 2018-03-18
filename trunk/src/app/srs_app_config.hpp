@@ -939,7 +939,11 @@ public:
      * that is, to read max bytes of the bytes from the callback, or timeout or error.
      */
     virtual int                 get_vhost_hls_nb_notify(std::string vhost);
-// hds section
+    /**
+    * get the interval in seconds to limit calls to nb notify.
+    */
+    virtual int                 get_vhost_hls_nb_notify_interval(std::string vhost);
+    // hds section
 private:
     /**
     * get the hds directive of vhost.

@@ -203,6 +203,7 @@ private:
 private:
     int _sequence_no;
     int max_td;
+    int _ts_reap_counter;
     std::string m3u8;
     std::string m3u8_url;
 private:

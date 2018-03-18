@@ -295,6 +295,7 @@ SrsHlsMuxer::SrsHlsMuxer()
     accept_floor_ts = 0;
     hls_ts_floor = false;
     max_td = 0;
+    _ts_reap_counter = 0;
     _sequence_no = 0;
     current = NULL;
     acodec = SrsCodecAudioReserved1;
@@ -727,9 +728,16 @@ int SrsHlsMuxer::segment_close(string log_desc)
             return ret;
         }
         
-        // use async to call the http hooks, for it will cause thread switch.
-        if ((ret = async->execute(new SrsDvrAsyncCallOnHlsNotify(_srs_context->get_id(), req, current->uri))) != ERROR_SUCCESS) {
-            return ret;
+        int nb_notify_interval = _srs_config->get_vhost_hls_nb_notify_interval(req->vhost);
+        int hls_fragment_length = _srs_config->get_hls_fragment(req->vhost);
+        int notify_period = nb_notify_interval / hls_fragment_length;
+        if (notify_period < 1) notify_period = 1;
+
+        if (++_ts_reap_counter % notify_period == 0) {
+            // use async to call the http hooks, for it will cause thread switch.
+            if ((ret = async->execute(new SrsDvrAsyncCallOnHlsNotify(_srs_context->get_id(), req, current->uri))) != ERROR_SUCCESS) {
+                return ret;
+            }
         }
     
         srs_info("%s reap ts segment, sequence_no=%d, uri=%s, duration=%.2f, start=%"PRId64,

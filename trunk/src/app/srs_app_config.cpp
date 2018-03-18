@@ -87,6 +87,7 @@ const char* _srs_version = "XCORE-"RTMP_SIG_SRS_SERVER;
 #define SRS_CONF_DEFAULT_HLS_CLEANUP true
 #define SRS_CONF_DEFAULT_HLS_WAIT_KEYFRAME true
 #define SRS_CONF_DEFAULT_HLS_NB_NOTIFY 64
+#define SRS_CONF_DEFAULT_HLS_NB_NOTIFY_INTERVAL 1
 #define SRS_CONF_DEFAULT_DVR_PATH "./objs/nginx/html/[app]/[stream].[timestamp].flv"
 #define SRS_CONF_DEFAULT_DVR_PLAN_SESSION "session"
 #define SRS_CONF_DEFAULT_DVR_PLAN_SEGMENT "segment"
@@ -3843,6 +3844,22 @@ int SrsConfig::get_vhost_hls_nb_notify(string vhost)
         return SRS_CONF_DEFAULT_HLS_NB_NOTIFY;
     }
     
+    return ::atoi(conf->arg0().c_str());
+}
+
+int SrsConfig::get_vhost_hls_nb_notify_interval(string vhost)
+{
+    SrsConfDirective* conf = get_hls(vhost);
+
+    if (!conf) {
+        return SRS_CONF_DEFAULT_HLS_NB_NOTIFY_INTERVAL;
+    }
+
+    conf = conf->get("hls_nb_notify_interval");
+    if (!conf || conf->arg0().empty()) {
+        return SRS_CONF_DEFAULT_HLS_NB_NOTIFY_INTERVAL;
+    }
+
     return ::atoi(conf->arg0().c_str());
 }
 
