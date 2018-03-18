@@ -83,8 +83,8 @@ void srs_vhost_resolve(string& vhost, string app, string param)
     app = srs_string_replace(app, "=", "?");
     app = srs_string_replace(app, "&", "?");
     
-    if (!param.empty()) {
-        std::string query = param;
+    if (!app.empty()) {
+        std::string query = app;
         
         size_t pos = std::string::npos;
         if ((pos = query.find("vhost?")) != std::string::npos) {
