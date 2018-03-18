@@ -2673,7 +2673,7 @@ int SrsRtmpServer::identify_client(int stream_id, SrsRtmpConnType& type, string&
         }
         if (dynamic_cast<SrsFMLEStartPacket*>(pkt)) {
             srs_info("identify client by releaseStream, fmle publish.");
-            return identify_fmle_publish_client(dynamic_cast<SrsFMLEStartPacket*>(pkt), type, stream_name);
+            return identify_fmle_publish_client(dynamic_cast<SrsFMLEStartPacket*>(pkt), type, stream_name, params);
         }
         if (dynamic_cast<SrsPlayPacket*>(pkt)) {
             srs_info("level0 identify client by play.");
@@ -3176,13 +3176,18 @@ int SrsRtmpServer::identify_create_stream_client(SrsCreateStreamPacket* req, int
     return ret;
 }
 
-int SrsRtmpServer::identify_fmle_publish_client(SrsFMLEStartPacket* req, SrsRtmpConnType& type, string& stream_name)
+int SrsRtmpServer::identify_fmle_publish_client(SrsFMLEStartPacket* req, SrsRtmpConnType& type, string& stream_name, string& param)
 {
     int ret = ERROR_SUCCESS;
     
     type = SrsRtmpConnFMLEPublish;
     stream_name = req->stream_name;
-    
+    size_t pos = string::npos;
+    if ((pos = stream_name.find("?")) != string::npos) {
+        param = stream_name.substr(pos);
+        stream_name = stream_name.substr(0, pos);
+    }
+
     // releaseStream response
     if (true) {
         SrsFMLEStartResPacket* pkt = new SrsFMLEStartResPacket(req->transaction_id);
@@ -3196,13 +3201,18 @@ int SrsRtmpServer::identify_fmle_publish_client(SrsFMLEStartPacket* req, SrsRtmp
     return ret;
 }
 
-int SrsRtmpServer::identify_haivision_publish_client(SrsFMLEStartPacket* req, SrsRtmpConnType& type, string& stream_name)
+int SrsRtmpServer::identify_haivision_publish_client(SrsFMLEStartPacket* req, SrsRtmpConnType& type, string& stream_name, string& param)
 {
     int ret = ERROR_SUCCESS;
     
     type = SrsRtmpConnHaivisionPublish;
     stream_name = req->stream_name;
-    
+    size_t pos = string::npos;
+    if ((pos = stream_name.find("?")) != string::npos) {
+        param = stream_name.substr(pos);
+        stream_name = stream_name.substr(0, pos);
+    }
+
     // FCPublish response
     if (true) {
         SrsFMLEStartResPacket* pkt = new SrsFMLEStartResPacket(req->transaction_id);
@@ -3216,13 +3226,18 @@ int SrsRtmpServer::identify_haivision_publish_client(SrsFMLEStartPacket* req, Sr
     return ret;
 }
 
-int SrsRtmpServer::identify_flash_publish_client(SrsPublishPacket* req, SrsRtmpConnType& type, string& stream_name)
+int SrsRtmpServer::identify_flash_publish_client(SrsPublishPacket* req, SrsRtmpConnType& type, string& stream_name, string& param)
 {
     int ret = ERROR_SUCCESS;
     
     type = SrsRtmpConnFlashPublish;
     stream_name = req->stream_name;
-    
+    size_t pos = string::npos;
+    if ((pos = stream_name.find("?")) != string::npos) {
+        param = stream_name.substr(pos);
+        stream_name = stream_name.substr(0, pos);
+    }
+
     return ret;
 }
 
