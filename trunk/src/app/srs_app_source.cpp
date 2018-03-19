@@ -748,6 +748,9 @@ int SrsSource::fetch_or_create(SrsRequest* r, ISrsSourceHandler* h, SrsSource** 
     SrsSource* source = NULL;
     if ((source = fetch(r)) != NULL) {
         *pps = source;
+        SrsRequest* old = source->_req;
+        source->_req = r->copy();
+        srs_freep(old);
         return ret;
     }
     
