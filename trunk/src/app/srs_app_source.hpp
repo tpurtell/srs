@@ -452,8 +452,10 @@ private:
     int _source_id;
     // previous source id.
     int _pre_source_id;
-    // deep copy of client request.
+    // deep copy of client request (it's the first one because of the pool)
     SrsRequest* _req;
+    // deep copy of client request.
+    SrsRequest* _last_req;
     // to delivery stream to clients.
     std::vector<SrsConsumer*> consumers;
     // the time jitter algorithm for vhost.

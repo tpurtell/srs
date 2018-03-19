@@ -748,8 +748,8 @@ int SrsSource::fetch_or_create(SrsRequest* r, ISrsSourceHandler* h, SrsSource** 
     SrsSource* source = NULL;
     if ((source = fetch(r)) != NULL) {
         *pps = source;
-        SrsRequest* old = source->_req;
-        source->_req = r->copy();
+        SrsRequest* old = source->_last_req;
+        source->_last_req = r->copy();
         srs_freep(old);
         return ret;
     }
@@ -1080,6 +1080,7 @@ int SrsSource::initialize(SrsRequest* r, ISrsSourceHandler* h)
 
     handler = h;
     _req = r->copy();
+    _last_req = r->copy;
     atc = _srs_config->get_atc(_req->vhost);
 
 #ifdef SRS_AUTO_HLS
@@ -2172,7 +2173,7 @@ int SrsSource::on_publish()
     
     // TODO: FIXME: use initialize to set req.
 #ifdef SRS_AUTO_TRANSCODE
-    if ((ret = encoder->on_publish(_req)) != ERROR_SUCCESS) {
+    if ((ret = encoder->on_publish(_last_req)) != ERROR_SUCCESS) {
         srs_error("start encoder failed. ret=%d", ret);
         return ret;
     }
