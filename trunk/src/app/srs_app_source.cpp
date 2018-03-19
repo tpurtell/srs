@@ -1080,7 +1080,7 @@ int SrsSource::initialize(SrsRequest* r, ISrsSourceHandler* h)
 
     handler = h;
     _req = r->copy();
-    _last_req = r->copy;
+    _last_req = r->copy();
     atc = _srs_config->get_atc(_req->vhost);
 
 #ifdef SRS_AUTO_HLS
