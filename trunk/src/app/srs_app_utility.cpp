@@ -253,6 +253,8 @@ int srs_kill_forced(int& pid)
         srs_trace("SIGTERM stop process pgid=%d ok.", pid);
         pid = -1;
         
+        //always murder the process group completely
+        kill(-pid, SIGKILL) < 0);
         return ret;
     }
 
