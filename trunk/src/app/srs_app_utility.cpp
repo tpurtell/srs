@@ -254,7 +254,7 @@ int srs_kill_forced(int& pid)
         pid = -1;
         
         //always murder the process group completely
-        kill(-pid, SIGKILL) < 0);
+        kill(-pid, SIGKILL);
         return ret;
     }
 
