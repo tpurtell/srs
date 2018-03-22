@@ -1142,7 +1142,6 @@ SrsHls::SrsHls()
     previous_audio_dts = 0;
     aac_samples = 0;
     
-
     codec = new SrsAvcAacCodec();
     sample = new SrsCodecSample();
     jitter = new SrsRtmpJitter();
@@ -1289,6 +1288,8 @@ void SrsHls::on_unpublish()
     }
     
     hls_enabled = false;
+    previous_audio_dts = 0;
+    aac_samples = 0;
 }
 
 int SrsHls::on_meta_data(SrsAmf0Object* metadata)
@@ -1367,13 +1368,13 @@ int SrsHls::on_audio(SrsSharedPtrMessage* shared_audio)
     
     // Use the diff to guess whether the samples is 1024 or 960.
     int nb_samples_per_frame = 1024;
-    int diff = ::abs((int)(audio->timestamp - previous_audio_dts)) * srs_flv_srates[format->acodec->sound_rate];
+    int diff = ::abs((int)(audio->timestamp - previous_audio_dts)) * flv_sample_rates[format->acodec->sound_rate];
     if (diff > 100 && diff < 950) {
         nb_samples_per_frame = 960;
     }
     
     // Recalc the DTS by the samples of AAC.
-    int64_t dts = 90000 * aac_samples / srs_flv_srates[format->acodec->sound_rate];
+    int64_t dts = 90000 * aac_samples / flv_sample_rates[format->acodec->sound_rate];
     aac_samples += nb_samples_per_frame;
         
     // for pure audio, we need to update the stream dts also.
