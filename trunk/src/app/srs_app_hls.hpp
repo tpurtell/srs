@@ -363,6 +363,12 @@ private:
     bool hls_can_dispose;
     int64_t last_update_time;
 private:
+    // If the diff=dts-previous_audio_dts is about 23,
+    // that's the AAC samples is 1024, and we use the samples to calc the dts.
+    int64_t previous_audio_dts;
+    // The total aac samples.
+    uint64_t aac_samples;    
+private:
     SrsSource* source;
     SrsAvcAacCodec* codec;
     SrsCodecSample* sample;

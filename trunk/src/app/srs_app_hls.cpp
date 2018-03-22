@@ -1139,6 +1139,10 @@ SrsHls::SrsHls()
     hls_can_dispose = false;
     last_update_time = 0;
 
+    previous_audio_dts = 0;
+    aac_samples = 0;
+    
+
     codec = new SrsAvcAacCodec();
     sample = new SrsCodecSample();
     jitter = new SrsRtmpJitter();
@@ -1355,9 +1359,23 @@ int SrsHls::on_audio(SrsSharedPtrMessage* shared_audio)
         return ret;
     }
     
-    // the dts calc from rtmp/flv header.
-    int64_t dts = audio->timestamp * 90;
+    // Reset the aac samples counter when DTS jitter.
+    if (previous_audio_dts > audio->timestamp) {
+        previous_audio_dts = audio->timestamp;
+        aac_samples = 0;
+    }
     
+    // Use the diff to guess whether the samples is 1024 or 960.
+    int nb_samples_per_frame = 1024;
+    int diff = ::abs((int)(audio->timestamp - previous_audio_dts)) * srs_flv_srates[format->acodec->sound_rate];
+    if (diff > 100 && diff < 950) {
+        nb_samples_per_frame = 960;
+    }
+    
+    // Recalc the DTS by the samples of AAC.
+    int64_t dts = 90000 * aac_samples / srs_flv_srates[format->acodec->sound_rate];
+    aac_samples += nb_samples_per_frame;
+        
     // for pure audio, we need to update the stream dts also.
     stream_dts = dts;
     
