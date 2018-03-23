@@ -988,11 +988,10 @@ int SrsRtmpConn::acquire_publish(SrsSource* source, bool is_edge)
             srs_error("notice edge start publish stream failed. ret=%d", ret);
             return ret;
         }        
-    } else {
-        if ((ret = source->on_publish()) != ERROR_SUCCESS) {
-            srs_error("notify publish failed. ret=%d", ret);
-            return ret;
-        }
+    }
+    if ((ret = source->on_publish()) != ERROR_SUCCESS) {
+        srs_error("notify publish failed. ret=%d", ret);
+        return ret;
     }
 
     return ret;
@@ -1004,9 +1003,8 @@ void SrsRtmpConn::release_publish(SrsSource* source, bool is_edge)
     // when origin, notice all service to unpublish.
     if (is_edge) {
         source->on_edge_proxy_unpublish();
-    } else {
-        source->on_unpublish();
     }
+    source->on_unpublish();
 }
 
 int SrsRtmpConn::handle_publish_message(SrsSource* source, SrsCommonMessage* msg, bool is_fmle, bool vhost_is_edge)
