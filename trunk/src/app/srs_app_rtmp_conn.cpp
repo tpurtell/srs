@@ -1062,7 +1062,6 @@ int SrsRtmpConn::process_publish_message(SrsSource* source, SrsCommonMessage* ms
             srs_error("edge publish proxy msg failed. ret=%d", ret);
             return ret;
         }
-        return ret;
     }
     
     // process audio packet
