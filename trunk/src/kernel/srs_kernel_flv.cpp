@@ -239,6 +239,7 @@ int SrsSharedPtrMessage::createWithPayloadClone(SrsCommonMessage* msg)
     // detach the payload to transfer the owner to shared ptr.
     char* new_payload = new char[msg->size];
     memcpy(new_payload, msg->payload, msg->size);
+    msg->payload = new_payload;
     
     return ret;
 }
