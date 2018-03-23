@@ -390,6 +390,7 @@ public:
      * @remark payload of msg set to NULL if success.
      */
     virtual int create(SrsCommonMessage* msg);
+    virtual int createWithPayloadClone(SrsCommonMessage* msg);
     /**
      * create shared ptr message,
      * from the header and payload.

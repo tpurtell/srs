@@ -573,7 +573,7 @@ int SrsEdgeForwarder::proxy(SrsCommonMessage* msg)
     }
     
     SrsSharedPtrMessage copy;
-    if ((ret = copy.create(msg)) != ERROR_SUCCESS) {
+    if ((ret = copy.createWithPayloadClone(msg)) != ERROR_SUCCESS) {
         srs_error("initialize the msg failed. ret=%d", ret);
         return ret;
     }
