@@ -150,8 +150,23 @@ SrsHlsSegment::~SrsHlsSegment()
 
 void SrsHlsSegment::update_duration(int64_t current_frame_dts)
 {
-    duration = fmax(duration, (current_frame_dts - segment_start_dts) / 90000.0);
+    // we use video/audio to update segment duration,
+    // so when reap segment, some previous audio frame will
+    // update the segment duration, which is nagetive,
+    // just ignore it.
+    if (current_frame_dts < segment_start_dts) {
+        // for atc and timestamp jump, reset the start dts.
+        if (current_frame_dts < segment_start_dts - SRS_AUTO_HLS_SEGMENT_TIMESTAMP_JUMP_MS * 90) {
+            srs_warn("hls timestamp jump %"PRId64"=>%"PRId64, segment_start_dts, current_frame_dts);
+            segment_start_dts = current_frame_dts;
+        }
+        return;
+    }
+    
+    duration = (current_frame_dts - segment_start_dts) / 90000.0;
     srs_assert(duration >= 0);
+    
+    return;
 }
 
 SrsDvrAsyncCallOnHls::SrsDvrAsyncCallOnHls(int c, SrsRequest* r, string p, string t, string m, string mu, int s, double d)
