@@ -150,7 +150,7 @@ SrsHlsSegment::~SrsHlsSegment()
 
 void SrsHlsSegment::update_duration(int64_t current_frame_dts)
 {
-    duration = max(duration, (current_frame_dts - segment_start_dts) / 90000.0);
+    duration = fmax(duration, (current_frame_dts - segment_start_dts) / 90000.0);
     srs_assert(duration >= 0);
 }
 
