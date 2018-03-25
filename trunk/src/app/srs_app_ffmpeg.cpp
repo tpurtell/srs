@@ -567,7 +567,7 @@ void SrsFFMPEG::fast_stop()
         return;
     }
     
-    if (kill(-pid, SIGTERM) < 0) {
+    if (kill(-pid, SIGKILL) < 0) {
         ret = ERROR_SYSTEM_KILL;
         srs_warn("ignore fast stop ffmpeg failed, pgid=%d. ret=%d", pid, ret);
         return;

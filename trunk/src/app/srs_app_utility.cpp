@@ -229,35 +229,7 @@ int srs_kill_forced(int& pid)
 {
     int ret = ERROR_SUCCESS;
     
-    // first, try kill by SIGTERM.
-    if (kill(-pid, SIGTERM) < 0) {
-        return ERROR_SYSTEM_KILL;
-    }
-    
-    // wait to quit.
-    srs_trace("send SIGTERM to pgid=%d", pid);
-    for (int i = 0; i < SRS_PROCESS_QUIT_TIMEOUT_MS / 10; i++) {
-        int status = 0;
-        pid_t qpid = -1;
-        if ((qpid = waitpid(pid, &status, WNOHANG)) < 0) {
-            return ERROR_SYSTEM_KILL;
-        }
-        
-        // 0 is not quit yet.
-        if (qpid == 0) {
-            st_usleep(10 * 1000);
-            continue;
-        }
-        
-        // killed, set pid to -1.
-        srs_trace("SIGTERM stop process pgid=%d ok.", pid);
-        pid = -1;
-        
-        //always murder the process group completely
-        kill(-pid, SIGKILL);
-        return ret;
-    }
-
+    srs_trace("send SIGKILL to pgid=%d", pid);
     // then, try kill by SIGKILL.
     if (kill(-pid, SIGKILL) < 0) {
         return ERROR_SYSTEM_KILL;
