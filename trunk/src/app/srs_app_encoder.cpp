@@ -88,7 +88,6 @@ int SrsEncoder::on_publish(SrsRequest* req)
 void SrsEncoder::on_unpublish()
 {
     pthread->stop();
-    clear_engines();
 }
 
 int SrsEncoder::cycle()
@@ -127,6 +126,8 @@ void SrsEncoder::on_thread_stop()
         SrsFFMPEG* ffmpeg = *it;
         ffmpeg->stop();
     }
+
+    clear_engines();
 }
 
 void SrsEncoder::clear_engines()
