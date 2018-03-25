@@ -2318,6 +2318,15 @@ int SrsSource::create_consumer(SrsConnection* conn, SrsConsumer*& consumer, bool
     } else {
         srs_trace("create consumer, ignore gop cache, jitter=%d", jitter_algorithm);
     }
+
+    // for edge, when play edge stream, check the state
+    if (_srs_config->get_vhost_is_edge(_req->vhost)) {
+        // notice edge to start for the first client.
+        if ((ret = play_edge->on_client_play()) != ERROR_SUCCESS) {
+            srs_error("notice edge start play stream failed. ret=%d", ret);
+            return ret;
+        }
+    }
     
     return ret;
 }

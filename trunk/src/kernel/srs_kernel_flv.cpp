@@ -226,24 +226,6 @@ int SrsSharedPtrMessage::create(SrsCommonMessage* msg)
     return ret;
 }
 
-int SrsSharedPtrMessage::createWithPayloadClone(SrsCommonMessage* msg)
-{
-    int ret = ERROR_SUCCESS;
-    
-    if ((ret = create(&msg->header, msg->payload, msg->size)) != ERROR_SUCCESS) {
-        return ret;
-    }
-    
-    // to prevent double free of payload:
-    // initialize already attach the payload of msg,
-    // detach the payload to transfer the owner to shared ptr.
-    char* new_payload = new char[msg->size];
-    memcpy(new_payload, msg->payload, msg->size);
-    msg->payload = new_payload;
-    
-    return ret;
-}
-
 int SrsSharedPtrMessage::create(SrsMessageHeader* pheader, char* payload, int size)
 {
     int ret = ERROR_SUCCESS;
