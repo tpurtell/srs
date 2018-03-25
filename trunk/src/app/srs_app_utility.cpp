@@ -225,9 +225,13 @@ void srs_parse_endpoint(string ip_port, string& ip, int& port)
     port = ::atoi(the_port.c_str());
 }
 
-int srs_kill_forced(int& pid)
+int srs_kill_forced(int pid)
 {
     int ret = ERROR_SUCCESS;
+
+    if (pid < 0) {
+        return ret;
+    }
     
     srs_trace("send SIGKILL to pgid=%d", pid);
     // then, try kill by SIGKILL.
@@ -249,7 +253,6 @@ int srs_kill_forced(int& pid)
     }
     
     srs_trace("SIGKILL stop process pgid=%d ok.", pid);
-    pid = -1;
     
     return ret;
 }

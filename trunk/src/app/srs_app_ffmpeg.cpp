@@ -548,7 +548,6 @@ void SrsFFMPEG::stop()
     int ret = srs_kill_forced(pid);
     if (ret != ERROR_SUCCESS) {
         srs_warn("ignore kill the encoder failed, pgid=%d. ret=%d", pid, ret);
-        return;
     }
     
     // terminated, set started to false to stop the cycle.

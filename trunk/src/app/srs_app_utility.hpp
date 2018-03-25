@@ -84,10 +84,10 @@ extern void srs_parse_endpoint(std::string ip_port, std::string& ip, int& port);
 /**
  * kill the pid by SIGINT, then wait to quit,
  * kill the pid by SIGKILL again when exceed the timeout.
- * @param pid the pid to kill. ignore for -1. set to -1 when killed.
+ * @param pid the pid to kill.
  * @return an int error code.
  */
-extern int srs_kill_forced(int& pid);
+extern int srs_kill_forced(int pid);
 
 // current process resouce usage.
 // @see: man getrusage
