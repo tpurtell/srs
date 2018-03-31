@@ -530,8 +530,9 @@ int SrsFFMPEG::cycle()
     }
     
     srs_trace("transcode process pid=%d terminate, restart it.", pid);
+    //need to kill any children of this pgid
+    fast_stop();    
     started = false;
-    
     return ret;
 }
 
